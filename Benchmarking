@@ -2,25 +2,37 @@
 	Benchmarking a hadoop cluster
 *********************************************
 
+1.jps
+2.hdfs dfa -ls -R ===> all directories
 
 -----*** Generate input using tergen ***-----
 $ 1.yarn jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-*examples*.jar teragen 524288 input  (50 MB)
-$ 2.hdfs dfs -ls input
-$ hdfs dfs -copyToLocal input ~
-$ nano ~/input/part-00000
-
+$ 2.hdfs dfs -ls
+$ 3.hdfs dfs -ls -R
+$ 4.hdfs dfs -ls input
+$ 5.ls ===> local file system
+$ 6.hdfs dfs -copyToLocal input ~ ====> This command will copy the input file to local directory
+$ 7. cd input /
+$ 8.ls
+$ 9.nano part-m-00000
+$ 10.nano ~/input/part-00000
+$ 11.cd
 
 
 -----*** Sort the input using terasort ***-----
-$ yarn jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-*examples*.jar terasort input output                
-$ hdfs dfs -ls output
-$ hdfs dfs -copyToLocal output ~
+$ 1.yarn jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-*examples*.jar terasort input output     
+$ 2.hdfs dfs -ls -R
+$ 3.hdfs dfs -ls output
+$ 4.hdfs dfs -copyToLocal output ~
+$ 5.cd output/
+$ 6.nano part-r-00000
+$ 7.cd
 $ nano ~/output/part-00000
 
 
 
 -----*** Run a write test ***-----
-$ yarn jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-*test*.jar TestDFSIO -write -nrFiles 5 -fileSize 100 
+$ 1.yarn jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-*test*.jar TestDFSIO -write -nrFiles 5 -fileSize 100 
 ## Results : ----- TestDFSIO ----- : write
             			     Date & time: Fri Jan 06 11:52:47 UTC 2017
         			     Number of files: 5
@@ -32,7 +44,7 @@ $ yarn jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-*test*.jar TestDFSIO 
 
 
 -----*** Run a read test ***-----
-yarn jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-*test*.jar TestDFSIO -read -nrFiles 5 -fileSize 100
+1.yarn jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-*test*.jar TestDFSIO -read -nrFiles 5 -fileSize 100
 ## Results :  ----- TestDFSIO ----- : read
 				      Number of files: 5
 				      Total MBytes processed: 250
@@ -43,24 +55,29 @@ yarn jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-*test*.jar TestDFSIO -r
 
 
 -----*** Clean read/write test data ***-----
-$ yarn jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-*test*.jar TestDFSIO -clean
+$ 1.yarn jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-*test*.jar TestDFSIO -clean
 
 
 
 -----*** MapReduce Benchmarking ***-----
-$ yarn jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-*test*.jar mrbench -numRuns 20
+$ 1.yarn jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-*test*.jar mrbench -numRuns 20
 ## Results
 DataLines	Maps	Reduces	AvgTime (milliseconds)
 1		2	1	17290
 
-
+> After upper command copy the public_DNS of instance ===> then past it on search bar:8088
+> Open another terminal on this command we have to perform in our terminal
+$ 1.bash
+$ 2.cd
+$ 3.ssh -i nick.pem ubuntu@public_DNs
+$ 4.jps
 
 -----*** Namenode Benchmark ***-----
 
-yarn jar  /usr/local/hadoop/share/hadoop/mapreduce/hadoop-*test*.jar nnbench -operation create_write \
+1.yarn jar  /usr/local/hadoop/share/hadoop/mapreduce/hadoop-*test*.jar nnbench -operation create_write \
     -maps 4 -reduces 2 -blockSize 1 -bytesToWrite 0 -numberOfFiles 100 \
     -replicationFactorPerFile 3 -readFileAfterOpen true \
-    -baseDir /benchmarks/NNBench-`hostname -s`
+    -baseDir /benchmarks/NNBench-`hostname -s` ====> copy past all this command in terminal
 
 
 
